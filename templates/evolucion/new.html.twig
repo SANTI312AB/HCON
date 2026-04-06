@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Evolucion{% endblock %}
+
+{% block body %}
+<div class="card-body p-5 bg-white rounded">
+    {{ include('full_antecedentes/ant_base.html.twig') }}
+
+    {{ include('evolucion/_form.html.twig') }}
+
+    <!-- Pestañas de Bootstrap -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="consulta-tab" data-toggle="tab" href="#consulta" role="tab" aria-controls="consulta" aria-selected="true">Consultas Actuales</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="todas-consultas-tab" data-toggle="tab" href="#todas-consultas" role="tab" aria-controls="todas-consultas" aria-selected="false">Todas las Consultas</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <!-- Contenido de la pestaña de Consultas Actuales -->
+        <div class="tab-pane fade show active" id="consulta" role="tabpanel" aria-labelledby="consulta-tab">
+            <table class="table">
+                <!-- Encabezado de la tabla -->
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <!-- Cuerpo de la tabla -->
+                <tbody id="articles">
+                    {% for evolucion in c %}
+                        <tr>
+                            <td>{{ evolucion.id }}</td>
+                            <td>{{ evolucion.descripcion }}</td>
+                            <td>
+                                <a class="dropdown-item" href="{{ path('app_evolucion_edit', {p: paciente.id, id: evolucion.id, c: consulta.id }) }}" style="font-size: 0.8em">Editar Evolución</a>
+                                <a href="#" class="dropdown-item delete-article" data-id="{{evolucion.id}}" style="font-size: 0.8em">Eliminar</a> 
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">No se encontraron registros</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Contenido de la pestaña de Todas las Consultas -->
+        <div class="tab-pane fade" id="todas-consultas" role="tabpanel" aria-labelledby="todas-consultas-tab">
+             <table id="example" style="width:100%" class="content-table table-lg">
+    <!-- Encabezado de la tabla -->
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Descripción</th>
+            <th>Fecha</th> <!-- Cerraste mal la etiqueta th -->
+        </tr>
+    </thead>
+    <!-- Cuerpo de la tabla -->
+    <tbody>
+        {% for evolucion in antecedentes2 %}
+            <tr>
+                <td>{{ evolucion.id }}</td>
+                <td>{{ evolucion.descripcion }}</td>
+                <td>{{ evolucion.consulta.fechaatencion ? evolucion.consulta.fechaatencion|date('Y-m-d') : '' }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No se encontraron registros</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+<script>
+
+  const articles = document.getElementById('articles');
+
+   if (articles) {
+     articles.addEventListener('click', e => {
+       if (e.target.className === 'dropdown-item delete-article') {
+         if (confirm('Esta seguro de eliminar este elemento?')) {
+             const value = e.target.getAttribute('data-id');
+              let route = "{{ path('app_evolucion_delete', { id: 'fileId_' }) }}";
+              route = route.replace('fileId_', value);
+   
+           fetch(route, {
+             method: 'DELETE'
+           }).then(res => window.location.reload());
+         }
+       }
+     });
+   };
+  </script>
+
+
+   <script type="text/javascript"> 
+     window.onload= function(){
+       document.getElementById("op15").style="background-color: #FDF4BC;";
+     }
+ </script>
+
+  <script> 
+       $(document).ready(function() {
+        $('#example').DataTable( {
+
+        
+            language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.22/i18n/Spanish.json'
+        },
+
+       
+         'responsive': true,
+          order:[2, 'desc'],
+         
+  } );
+    } );
+ </script>
+
+{% endblock %}
+
+
+

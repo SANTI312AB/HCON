@@ -1,0 +1,24 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        driver: 'sqlsrv'
+        # Forzamos el charset a un valor que el driver SÍ acepta
+        charset: 'UTF-8' 
+
+        options:
+            TrustServerCertificate: true
+            Encrypt: true
+            # Reforzamos el CharacterSet aquí también por seguridad
+            CharacterSet: 'UTF-8'
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation # O 'attribute' si usas Symfony 6/7
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

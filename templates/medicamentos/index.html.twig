@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Medicamentos index{% endblock %}
+
+{% block body %}
+<div class="page-header">
+   <img src="{{ asset('image/Recursos_Banner 3.jpg') }}" height="100" width=100% >
+</div> 
+<div class="card-body p-5 bg-white rounded">
+    </br>
+   
+ {{ form_start(form) }}
+ <button class="btn bg-primary btn-sm">
+    <a href="{{ path('medicamentos_new') }}">  Crear nuevo Medicamento <i class="fas fa-plus-square"></i>
+    </a>
+ </button>
+
+ </br>
+    {{ form_row(form.file, {
+        attr: {
+            'placeholder': 'Seleccione un archivo'
+        }
+    }) }}
+    </div>    
+    <button class="btn btn-success btn-sm">
+            {{ button_label|default('Importar datos') }}
+            <i class="fas fa-file-import"></i>
+    </button>
+    
+
+     {{ form_end(form) }}
+     </br>
+
+ <table id="example" 
+       class="content-table table-sm" 
+       style="width:100%" 
+       data-edit-url="{{ path('medicamentos_edit', {'id': '__id__'}) }}">
+    <thead>
+        <tr>
+            <th>Codigo</th>
+            <th>Descripcion</th>
+            <th>Principio Activo</th>
+            <th>Laboratorio</th>
+            <th>Año</th>
+            <th class="no-export">Acciones</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+    
+</div>
+{% endblock %}
+
+
+{% block javascripts %}
+<script> 
+          
+        $(function() {
+  // Sidebar toggle behavior
+  $('#sidebarCollapse').on('click', function() {
+    $('#sidebar, #content').toggleClass('active');
+  });
+});
+</script>
+
+ <script> 
+$(document).ready(function() {
+    // Obtenim el patró de la URL des de l'atribut data de la taula
+    var editUrlPattern = $('#example').data('edit-url');
+
+    $('#example').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": "{{ path('medicamentos_data') }}",
+        "columns": [
+            { "data": "codigo" },
+            { "data": "descripcion" },
+            { "data": "principio_activo" },
+            { "data": "laboratorio" },
+            { "data": "year" },
+            {
+                "data": "id",
+                "render": function (data, type, row) {
+                    // Substituïm el comodí pel valor real de l'ID
+                    var url = editUrlPattern.replace('__id__', data);
+                    
+                    return `
+                        <a href="${url}" class="btn btn-sm btn-outline-primary" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    `;
+                },
+                "orderable": false // Les accions no s'han d'ordenar
+            }
+        ],
+        "language": {
+            "url": "https://cdn.datatables.net/plug-ins/1.10.22/i18n/Spanish.json"
+        }
+    });
+});
+</script>
+
+
+  
+
+   {% endblock %}

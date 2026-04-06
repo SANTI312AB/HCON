@@ -1,0 +1,248 @@
+{# SECTION C: ANTECEDENTES PERSONALES - VERSION SEGURA #}
+
+    <h5 class="header-purple-a">C. ANTECEDENTES PERSONALES</h5>
+
+    {# 1. CLÍNICOS Y QUIRÚRGICOS #}
+    <table class="table-datos">
+        <thead>
+            <tr>
+                <th colspan="2" class="label-green-a" style="text-align: left;">ANTECEDENTES CLÍNICOS Y QUIRÚRGICOS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="label-green-a" style="width: 15%;">Descripción</td>
+                <td class="value-cell-a" style="text-align: left;">
+                    {% for ant in antq %}
+                        {{ ant.antclinico|default('Sin nombre') }}: {{ ant.procedimiento|default('N/A') }} ({{ ant.tiempo|default('-') }}){% if not loop.last %}; {% endif %}
+                    {% else %}
+                        SIN ANTECEDENTES DE IMPORTANCIA
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+   
+        {# VALIDACIÓN SEGURA PARA EVITAR EL ERROR DE BOOL #}
+        {% set registro = antf|first %}
+
+{# 2. FAMILIARES Y ESPECIALES #}
+
+
+<table class="table-datos" style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+       <thead>
+        <tr>
+            <th colspan="4" class="header-purple-a" style="text-align: left;">ANTECEDENTES FAMILIARES </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="label-green-a" style="width: 20%; background-color: #ccffcc !important; border: 1px solid #000; font-size: 0.7rem; font-weight: bold;">Descripción de Patologías</td>
+            <td colspan="3" class="value-cell-a" style="text-align: left; border: 1px solid #000; padding: 5px; font-size: 0.75rem;">
+                {% if antf is not empty %}
+                    {% for f in antf %}
+                        <strong>{{ f.Parentesco|default('Familiar') }}:</strong> {{ f.Patologia|default('N/A') }} 
+                        {% if f.descripcion is not empty %}({{ f.descripcion }}){% endif %}
+                        {% if not loop.last %}; {% endif %}
+                    {% endfor %}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+
+  
+         {# 1. Forzamos que registro sea NULL si no hay datos, evitando el booleano FALSE #}
+{% set registro = antf|first ?: null %}
+
+<tr>
+    <td class="label-green-a" style="width: 20%; background-color: #ccffcc !important; border: 1px solid #000; font-size: 0.7rem;">
+        Autoriza Transfusiones:
+    </td>
+    <td class="value-cell-a" style="width: 30%; border: 1px solid #000; text-align: center;">
+        {# Validamos que sea un objeto #}
+        {% if registro and registro.transfusion is defined %}
+            {{ registro.transfusion ? 'SÍ' : 'NO' }}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+    
+    <td class="label-green-a" style="width: 20%; background-color: #ccffcc !important; border: 1px solid #000; font-size: 0.7rem;">
+        Tratamiento Hormonal:
+    </td>
+    <td class="value-cell-a" style="border: 1px solid #000; text-align: center;">
+        {% if registro and registro.tratamientohormonal is defined %}
+            {{ registro.tratamientohormonal ? 'SÍ' : 'NO' }}
+            
+            {# Solo entramos aquí si es SÍ y el objeto es válido #}
+            {% if registro.tratamientohormonal %}
+                {# Acceso seguro: Twig llamará automáticamente al getter si existe #}
+                {% set descH = registro.descripcionTratamientoHormonal|default('') %}
+                
+                {% if descH is not empty %}
+                    | <em>{{ descH }}</em>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+</tr>
+    </tbody>
+</table>
+   
+    {# 3. REPRODUCTIVOS (Gíneco / Masculinos) #}
+{% set s1 = "Mujer" %}
+
+<table class="table-datos">
+    <thead>
+        <tr>
+            <th colspan="6" class="header-purple-a" style="text-align: left;">ANTECEDENTES REPRODUCTIVOS</th>
+        </tr>
+    </thead>
+    
+    {% if paciente.sexo == s1 %}
+        {# --- SECCIÓN MUJER --- #}
+        <thead>
+            <tr class="label-green-a">
+                <th style="font-size: 0.6rem;">F. ÚLTIMA MENSTRUACIÓN</th>
+                <th>GESTAS</th>
+                <th>PARTOS</th>
+                <th>CESÁREAS</th>
+                <th>ABORTOS</th>
+                <th>PLANIFICACIÓN / VIDA SEXUAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in antr %}
+            <tr>
+                <td class="value-cell-a">{{ r.ultimamenstruacion ? r.ultimamenstruacion|date('Y-m-d') : 'N/A' }}</td>
+                <td class="value-cell-a">{{ r.gestas|default(0) }}</td>
+                <td class="value-cell-a">{{ r.partos|default(0) }}</td>
+                <td class="value-cell-a">{{ r.cesareas|default(0) }}</td>
+                <td class="value-cell-a">{{ r.abortos|default(0) }}</td>
+                <td class="value-cell-a" style="font-size: 0.7rem;">
+                    {{ r.metodo_planificacion|default('Ninguno') }} / {{ r.vida_sexual|default('N/R') }}
+                </td>
+            </tr>
+            {% else %}
+                <tr><td colspan="6" class="value-cell-a">No hay registros reproductivos femeninos</td></tr>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        {# --- SECCIÓN HOMBRE (Corregida) --- #}
+        <thead>
+            <tr class="label-green-a">
+                <th>ANTÍGENO PROSTÁTICO</th>
+                <th>RESULTADO / TIEMPO</th>
+                <th>ECO PROSTÁTICO</th>
+                <th>RESULTADO / TIEMPO</th>
+                <th>PLANIFICACIÓN</th>
+                <th>VIDA SEXUAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in antr %}
+            <tr>
+                {# Usamos los nombres exactos de la entidad con guiones bajos #}
+                <td class="value-cell-a">{{ r.antigenoprostatico|default('N/A') }}</td>
+                <td class="value-cell-a">
+                    {{ r.resultadoantigenoprostatico|default('-') }} 
+                    {% if r.tiempoantigenoprostatico %}({{ r.tiempoantigenoprostatico }} m){% endif %}
+                </td>
+                <td class="value-cell-a">{{ r.ecoprostatico|default('N/A') }}</td>
+                <td class="value-cell-a">
+                    {{ r.resultadoecoprostatico|default('-') }}
+                    {% if r.tiempoecoprostatico %}({{ r.tiempoecoprostatico }} m){% endif %}
+                </td>
+                <td class="value-cell-a">{{ r.metodoplanificacion|default('Ninguno') }}</td>
+                <td class="value-cell-a">{{ r.vidasexual|default('N/R') }}</td>
+            </tr>
+            {% else %}
+                <tr><td colspan="6" class="value-cell-a">No hay registros reproductivos masculinos</td></tr>
+            {% endfor %}
+        </tbody>
+    {% endif %}
+</table>
+
+
+{# ANTECEDENTES NO PATOLÓGICOS - REGISTRO ÚNICO #}
+{# Usamos default(null) para asegurar que si 'antn' está vacío, 'n' sea null y no false #}
+{% set n = antn|last|default(null) %} 
+
+<table class="table-datos">
+    <thead>
+        <tr class="label-green-a">
+            <th colspan="3">CONSUMO DE SUSTANCIAS</th>
+            <th colspan="2">ESTILO DE VIDA</th>
+            <th colspan="2">CONDICIÓN PREEXISTENTE</th>
+        </tr>
+        <tr class="label-green-a" style="font-size: 0.55rem;">
+            <th>TIPO</th>
+            <th>TIEMPO / FREC.</th>
+            <th>EX / ABST.</th>
+            <th>ACTIVIDAD FÍSICA</th>
+            <th>TIEMPO / FREC.</th>
+            <th>MEDICACIÓN HABITUAL</th>
+            <th>CANTIDAD SEMANAL</th>
+        </tr>
+    </thead>
+    <tbody>
+        {# Verificamos que 'n' sea iterable (un objeto o array) y no esté vacío #}
+        {% if n is iterable and n is not empty %}
+            {# FILA 1: TABACO + DATOS LATERALES #}
+            <tr>
+                <td class="label-green-a" style="font-size: 0.7rem;">TABACO</td>
+                <td class="value-cell-a">
+                    {{ n.tabaco is defined and n.tabaco is not null ? n.tabaco : '—' }} 
+                    {{ n.tiempoconsumo ? '/ ' ~ n.tiempoconsumo : '' }}
+                </td>
+                <td class="value-cell-a">
+                    {{ n.exconsumidor is defined and n.exconsumidor is not null ? (n.exconsumidor ? 'SÍ' : 'NO') : '—' }}
+                    {{ n.tiempoabstinencia ? '/ ' ~ n.tiempoabstinencia ~ ' años' : '' }}
+                </td>
+                
+                <td rowspan="3" class="value-cell-a">{{ n.actividadfisica|default('—') }}</td>
+                <td rowspan="3" class="value-cell-a">{{ n.numeroactividadfisica|default('—') }}</td>
+                <td rowspan="3" class="value-cell-a">{{ n.medicacionabitual|default('—') }}</td>
+                <td rowspan="3" class="value-cell-a">{{ n.cantdadmedicacion|default('—') }}</td>
+            </tr>
+
+            {# FILA 2: ALCOHOL #}
+            <tr>
+                <td class="label-green-a" style="font-size: 0.7rem;">ALCOHOL</td>
+                <td class="value-cell-a">
+                    {{ n.sustanciaselec|default('—') }}
+                    {{ n.tiempoconsumoa ? '/ ' ~ n.tiempoconsumoa : '' }}
+                </td>
+                <td class="value-cell-a">
+                    {{ n.exconsumidora is defined and n.exconsumidora is not null ? (n.exconsumidora ? 'SÍ' : 'NO') : '—' }}
+                    {{ n.tiempoabstinenciaa ? '/ ' ~ n.tiempoabstinenciaa ~ ' años' : '' }}
+                </td>
+            </tr>
+
+            {# FILA 3: DROGAS #}
+            <tr>
+                <td class="label-green-a" style="font-size: 0.7rem;">OTRAS / DROGAS</td>
+                <td class="value-cell-a">
+                    {{ n.usosustancias|default('—') }}
+                    {{ n.drogadescripcion ? ': ' ~ n.drogadescripcion : '' }}
+                </td>
+                <td class="value-cell-a">
+                    {{ n.tiempoconsumod|default('—') }}
+                </td>
+            </tr>
+        {% else %}
+            {# CASO SIN DATOS #}
+            <tr>
+                <td colspan="3" class="value-cell-a text-center" style="height: 60px;">Sin registros de sustancias</td>
+                <td colspan="2" class="value-cell-a text-center">—</td>
+                <td colspan="2" class="value-cell-a text-center">—</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>

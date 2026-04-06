@@ -1,0 +1,64 @@
+{# G. FACTORES DE RIESGO DEL TRABAJO ACTUAL #}
+<h5 class="header-purple-a">G. FACTORES DE RIESGO DEL TRABAJO ACTUAL</h5>
+<div class="puesto-info" style="background: #f8f9fa; padding: 5px; border: 1px solid #000; margin-bottom: 5px;">
+    <strong>PUESTO DE TRABAJO:</strong> {{ paciente.puestotrabajo.nombre|upper }}
+</div>
+
+{# Definición de grupos de riesgo según los valores de tu ActividadesType #}
+{% set grupo_fisico = ['Temperaturas altas', 'Temperaturas bajas', 'Radiacion Ionizante', 'Radiacion No Ionizante', 'Ruido', 'Vibracion', 'Iluminacion', 'Ventilacion', 'Fluido electrico'] %}
+{% set grupo_mecanico = ['Atrapamiento entre maquinas', 'Atrapamiento entre superficies', 'Atrapamiento entre objetos', 'Caida de objetos', 'Caidas al mismo nivel', 'Caidas a diferente nivel', 'Contacto electrico', 'Contacto con superficies de trabajos', 'Proyeccion de partículas –fragmentos', 'Proyeccion de fluidos', 'Pinchazos', 'Cortes', 'Atropellamientos por vehiculos', 'Choques / Colision vehicular'] %}
+{% set grupo_quimico = ['Solidos', 'Polvos', 'Humos', 'liquidos', 'vapores', 'Aerosoles', 'Neblinas', 'Gaseosos'] %}
+{% set grupo_biologico = ['Virus', 'Hongos', 'Bacterias', 'Parasitos', 'Exposicion a vectores', 'Exposicion a animales selvaticos'] %}
+{% set grupo_ergonomico = ['Manejo manual de cargas', 'Movimiento repetitivos', 'Posturas forzadas', 'Trabajos con PVD'] %}
+{% set grupo_psicosocial = ['Monotonia del trabajo', 'Sobrecarga laboral', 'Minuciosidad de la tarea', 'Alta responsabilidad', 'Autonomia  en la toma de decisiones', 'Supervision y estilos de dirección deficiente', 'Conflicto de rol', 'Falta de Claridad en las funciones', 'Incorrecta distribución del trabajo', 'Turnos rotativos', 'Relaciones interpersonales', 'Inestabilidad laboral'] %}
+
+<table class="table-riesgos" style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+    <thead>
+        <tr class="label-green-a">
+            <th style="width: 30%; font-size: 0.7rem; border: 1px solid #000;" rowspan="2">ACTIVIDADES IMPORTANTES DENTRO DE LA JORNADA LABORAL</th>
+            <th colspan="7" style="font-size: 0.7rem; border: 1px solid #000; text-align: center;">FACTORES DE RIESGO (Marcar con X)</th>
+        </tr>
+        <tr class="label-green-a" style="font-size: 0.55rem; text-align: center;">
+            <th style="border: 1px solid #000;">1. FÍSICO</th>
+            <th style="border: 1px solid #000;">2. MECÁNICO</th>
+            <th style="border: 1px solid #000;">3. QUÍMICO</th>
+            <th style="border: 1px solid #000;">4. BIOLÓGICO</th>
+            <th style="border: 1px solid #000;">5. ERGONÓMICO</th>
+            <th style="border: 1px solid #000;">6. PSICOSOCIAL</th>
+            <th style="border: 1px solid #000;">7. OTROS</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in puesto %}
+            {% set r = p.riesgos %} {# El array de riesgos seleccionados para esta actividad #}
+            
+            {# Lógica de marcado por intersección simple #}
+            {% set hasFisico = false %}{% for val in r %}{% if val in grupo_fisico %}{% set hasFisico = true %}{% endif %}{% endfor %}
+            {% set hasMecanico = false %}{% for val in r %}{% if val in grupo_mecanico %}{% set hasMecanico = true %}{% endif %}{% endfor %}
+            {% set hasQuimico = false %}{% for val in r %}{% if val in grupo_quimico %}{% set hasQuimico = true %}{% endif %}{% endfor %}
+            {% set hasBiologico = false %}{% for val in r %}{% if val in grupo_biologico %}{% set hasBiologico = true %}{% endif %}{% endfor %}
+            {% set hasErgonomico = false %}{% for val in r %}{% if val in grupo_ergonomico %}{% set hasErgonomico = true %}{% endif %}{% endfor %}
+            {% set hasPsicosocial = false %}{% for val in r %}{% if val in grupo_psicosocial %}{% set hasPsicosocial = true %}{% endif %}{% endfor %}
+            {% set hasOtros = 'Otros' in r %}
+
+            <tr style="text-align: center;">
+                <td class="value-cell-a" style="text-align: left; font-size: 0.65rem; padding: 4px; border: 1px solid #000;">
+                    {{ p.actividad|upper }}
+                </td>
+                <td class="check-cell" style="border: 1px solid #000;">{{ hasFisico ? 'X' : '' }}</td>
+                <td class="check-cell" style="border: 1px solid #000;">{{ hasMecanico ? 'X' : '' }}</td>
+                <td class="check-cell" style="border: 1px solid #000;">{{ hasQuimico ? 'X' : '' }}</td>
+                <td class="check-cell" style="border: 1px solid #000;">{{ hasBiologico ? 'X' : '' }}</td>
+                <td class="check-cell" style="border: 1px solid #000;">{{ hasErgonomico ? 'X' : '' }}</td>
+                <td class="check-cell" style="border: 1px solid #000;">{{ hasPsicosocial ? 'X' : '' }}</td>
+                <td class="check-cell" style="border: 1px solid #000;">{{ hasOtros ? 'X' : '' }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center" style="border: 1px solid #000; padding: 10px;">
+                    No se han definido actividades para este puesto.
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

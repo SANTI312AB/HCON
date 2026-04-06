@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Antecedentes Patológicos{% endblock %}
+
+{% block body %}
+<div class="card-body p-5 bg-white rounded">
+{{ include('full_antecedentes/ant_base.html.twig') }}
+{% for flash_message in app.session.flashbag.get('exito') %}
+    <div class="flash-notice">
+        {{ flash_message }}
+    </div>
+{% endfor %}
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn-block btn-primary"><i class="fas fa-save">{{ button_label|default('Guardar') }}</i></button>
+{{ form_end(form) }}
+</div>
+{% endblock %}
+
+
+{% block javascripts %}
+
+ <script type="text/javascript"> 
+     window.onload= function(){
+       document.getElementById("op13").style="background-color: #FDF4BC;";
+     }
+ </script>
+
+
+
+
+  
+
+   {% endblock %}

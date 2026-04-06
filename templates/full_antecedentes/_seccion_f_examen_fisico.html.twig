@@ -1,0 +1,185 @@
+{# F. EXAMEN FISICO REGIONAL #}
+<div class="section-f" style="margin-top: 20px;">
+    <h5 class="header-purple-a">F. EXAMEN FÍSICO REGIONAL</h5>
+    
+    <table class="table-regional">
+        <thead>
+            <tr>
+                <th colspan="15" class="label-green-a" style="text-align: left; padding-left: 10px;">REGIONES</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set e = examen_fisicos|last %} {# Tomamos el registro más reciente #}
+            
+            <tr>
+                {# COLUMNA 1: PIEL Y OJOS #}
+                <td colspan="3" class="column-block">
+                    <div class="region-box">
+                        <div class="vertical-label">1. Piel</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Cicatrices</span> <div class="check-box">{{ e and e.piel ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Piel y Faneras</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">2. Ojos</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Párpados</span> <div class="check-box">{{ e and e.ojos ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Conjuntivas</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Pupilas</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>d. Córnea</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>e. Motilidad</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                </td>
+
+                {# COLUMNA 2: OIDO Y OROFARINGE #}
+                <td colspan="3" class="column-block">
+                    <div class="region-box">
+                        <div class="vertical-label">3. Oído</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. C. auditivo externo</span> <div class="check-box">{{ e and e.oido ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Pabellón</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Tímpanos</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">4. Oro faringe</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Labios</span> <div class="check-box">{{ e and e.oro_farinje ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Lengua</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Faringe</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>d. Amígdalas</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>e. Dentadura</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                </td>
+
+                {# COLUMNA 3: NARIZ, CUELLO Y TORAX 1 #}
+                <td colspan="3" class="column-block">
+                    <div class="region-box">
+                        <div class="vertical-label">5. Nariz</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Tabique</span> <div class="check-box">{{ e and e.nariz ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Cornetes</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Mucosas</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>d. Senos paranasales</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">6. Cuello</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Tiroides / masas</span> <div class="check-box">{{ e and e.cuello ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Movilidad</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">7. Tórax</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Mamas</span> <div class="check-box">{{ e and e.torax1 ? 'X' : '' }}</div></div>
+                        </div>
+                    </div>
+                </td>
+
+                {# COLUMNA 4: TORAX 2, ABDOMEN Y COLUMNA #}
+                <td colspan="3" class="column-block">
+                    <div class="region-box">
+                        <div class="vertical-label">8. Tórax</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Pulmones</span> <div class="check-box">{{ e and e.torax1 ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Corazón</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Parrilla costal</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">9. Abdomen</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Vísceras</span> <div class="check-box">{{ e and e.abdomen ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Pared abdominal</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">10. Columna</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Flexibilidad</span> <div class="check-box">{{ e and e.columna ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Desviación</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Dolor</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                </td>
+
+                {# COLUMNA 5: PELVIS, EXTREMIDADES Y NEUROLOGICO #}
+                <td colspan="3" class="column-block">
+                    <div class="region-box">
+                        <div class="vertical-label">11. Pelvis</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Pelvis</span> <div class="check-box">{{ e and e.pelvis ? 'X' : '' }}</div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">12. Extr.</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Vascular</span> <div class="check-box">{{ e and e.extremidades ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Miembros superiores</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Miembros inferiores</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                    <div class="region-box">
+                        <div class="vertical-label">13. Neur.</div>
+                        <div class="sub-items">
+                            <div class="item-row"><span>a. Fuerza</span> <div class="check-box">{{ e and e.neurologico ? 'X' : '' }}</div></div>
+                            <div class="item-row"><span>b. Sensibilidad</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>c. Marcha</span> <div class="check-box"></div></div>
+                            <div class="item-row"><span>d. Reflejos</span> <div class="check-box"></div></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            
+            {# NOTA AL PIE #}
+            <tr>
+                <td colspan="15" style="font-size: 0.6rem; text-align: left; padding: 5px; border-top: 1px solid #000;">
+                    SI EXISTE EVIDENCIA DE PATOLOGÍA MARCAR CON "X" Y DESCRIBIR EN LA SIGUIENTE SECCIÓN COLOCANDO EL NUMERAL
+                </td>
+            </tr>
+            
+            {# OBSERVACIONES #}
+            <tr>
+                <td colspan="15" class="value-cell-a" style="text-align: left; min-height: 40px; padding: 10px;">
+                    <strong>Observación:</strong> {{ e.observaciones|default('Sin hallazgos patológicos.') }}
+                    {# Aquí podrías listar los JSON si tienen contenido #}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .table-regional { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .column-block { vertical-align: top; border: 1px solid #000; padding: 0 !important; }
+    
+    .region-box { display: flex; border-bottom: 0.5px solid #ccc; min-height: 60px; }
+    .vertical-label { 
+        writing-mode: vertical-rl; 
+        transform: rotate(180deg); 
+        text-align: center; 
+        background-color: #e3f2fd; 
+        font-size: 0.6rem; 
+        font-weight: bold;
+        padding: 5px 2px;
+        border-left: 1px solid #000;
+        width: 25px;
+    }
+    .sub-items { flex-grow: 1; display: flex; flex-direction: column; background-color: #fff; }
+    .item-row { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 2px 5px; 
+        font-size: 0.55rem; 
+        border-bottom: 0.1px solid #eee;
+    }
+    .check-box { width: 12px; height: 12px; border: 1px solid #000; text-align: center; line-height: 12px; font-weight: bold; }
+    .header-purple-a { background-color: #d1c4e9; padding: 5px; font-weight: bold; border: 1px solid #000; }
+    .label-green-a { background-color: #c8e6c9; border: 1px solid #000; }
+</style>

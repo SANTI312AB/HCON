@@ -1,0 +1,61 @@
+{{ form_start(form) }}
+    <div class="row">
+        {# Campo CIE: Ocupa toda la fila (col-12) por su importancia y longitud de texto #}
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.cie) }}
+                {{ form_widget(form.cie) }}
+                {{ form_errors(form.cie) }}
+            </div>
+        </div>
+
+        {# Fila 2: Tipo de Diagnóstico y Pedido de Laboratorio #}
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.tipo_diagnostico) }}
+                {{ form_widget(form.tipo_diagnostico) }}
+                {{ form_errors(form.tipo_diagnostico) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.solicitud) }}
+                {{ form_widget(form.solicitud) }}
+                {{ form_errors(form.solicitud) }}
+            </div>
+        </div>
+
+        {# Fila 3: Examen Complementario y Fisioterapia #}
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.solicitud_complementaria) }}
+                {{ form_widget(form.solicitud_complementaria) }}
+                {{ form_errors(form.solicitud_complementaria) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.procedimiento) }}
+                {{ form_widget(form.procedimiento) }}
+                {{ form_errors(form.procedimiento) }}
+            </div>
+        </div>
+
+        {# Fila 4: Interconsulta (y un espacio vacío o podrías mover otro aquí) #}
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.interconsulta) }}
+                {{ form_widget(form.interconsulta) }}
+                {{ form_errors(form.interconsulta) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <button class="btn btn-block bg-gradient-primary btn-sm">
+                <i class="fas fa-save"></i> {{ button_label|default(' Guardar Registro') }}
+            </button>
+        </div>
+    </div>
+{{ form_end(form) }}

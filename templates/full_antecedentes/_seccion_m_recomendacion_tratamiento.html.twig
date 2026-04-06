@@ -1,0 +1,29 @@
+{# M. RECOMENDACIONES Y TRATAMIENTO #}
+ <h5 class="header-purple-a">M. RECOMENDACIONES Y TRATAMIENTO</h5>
+ <table id="dgo" style="width:100%" class="table table-bordered table-sm">
+    <thead class="bg-light">
+        <tr>
+            <th>Enfermedad</th>
+           
+            <th>Indicaciones</th>
+        </tr>
+    </thead>
+    <tbody id="articles">
+        {% for diagnostico in diagnosticos %}
+            <tr>
+                <td>
+                    <strong>Diagnóstico CIE:</strong> {{ diagnostico.descripcion }} <br>
+                    <strong>Grupo CIE:</strong> {{ diagnostico.tipo }} <br>
+                    <strong>Tipo de Diagnóstico:</strong> {{ diagnostico.tipo_diagnostico }}
+                </td>
+                <td>{{ diagnostico.indicaciones }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">No hay registros disponibles</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    
+    

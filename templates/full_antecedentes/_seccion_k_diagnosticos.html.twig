@@ -1,0 +1,36 @@
+{# K. DIAGNÓSTICO #}
+<h5 class="header-purple-a mt-4">K. DIAGNÓSTICO</h5>
+<table id="dgo" style="width:100%" class="table table-bordered table-sm">
+    <thead class="bg-light">
+        <tr>
+            <th>Enfermedad</th>
+            <th>Medicamento</th>
+            <th>Presentación</th>
+            <th>Dosis</th>
+            <th>Cantidad</th>
+            <th>Frecuencia</th>
+            <th>Duración</th>
+        </tr>
+    </thead>
+    <tbody id="articles">
+        {% for diagnostico in diagnosticos %}
+            <tr>
+                <td>
+                    <strong>Diagnóstico CIE:</strong> {{ diagnostico.descripcion }} <br>
+                    <strong>Grupo CIE:</strong> {{ diagnostico.tipo }} <br>
+                    <strong>Tipo de Diagnóstico:</strong> {{ diagnostico.tipo_diagnostico }}
+                </td>
+                <td>{{ diagnostico.medicamento }}</td>
+                <td>{{ diagnostico.presentacion }}</td>
+                <td>{{ diagnostico.dosis }}</td>
+                <td>{{ diagnostico.cantidad }}</td>
+                <td>{{ diagnostico.frecuencia }}</td>
+                <td>{{ diagnostico.duracion }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">No hay registros disponibles</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

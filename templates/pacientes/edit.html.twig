@@ -1,0 +1,248 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Pacientes{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+   <style>
+        /* 1. Controla la altura del despliegue y activa el scroll */
+       /* Estilo para las etiquetas seleccionadas */
+
+    /* Recuperar y personalizar el scroll de los resultados */
+    .select2-results__options {
+        max-height: 250px !important; /* Ajusta la altura máxima a tu gusto */
+        overflow-y: auto !important;  /* Forza la aparición del scroll vertical */
+    }
+
+    /* Estilizar la barra de scroll para que sea más moderna (opcional) */
+    .select2-results__options::-webkit-scrollbar {
+        width: 8px;
+    }
+    .select2-results__options::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .select2-results__options::-webkit-scrollbar-thumb {
+        background: #007bff;
+        border-radius: 4px;
+    }
+
+    /* Estilo para las etiquetas (tags) seleccionadas para que no rompan el layout */
+    .select2-container--bootstrap4 .select2-selection--multiple {
+        min-height: 38px !important;
+        height: auto !important;
+        padding-bottom: 5px;
+    }
+
+    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff !important;
+        border: none !important;
+        color: white !important;
+        margin-top: 5px !important;
+        padding: 2px 10px !important;
+    }
+
+    .select2-dropdown {
+    max-height: 300px;
+    overflow: hidden;
+}
+
+.select2-results__options {
+    max-height: 250px !important;
+    overflow-y: auto !important;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple::after {
+    content: "\f067"; /* icono plus */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: #007bff;
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="card-body p-5 bg-white rounded">
+    <h4 class="text-primary">Editar Paciente: {{ paciente.pnombre }} {{ paciente.papellido }}</h4>
+
+    {{ include('pacientes/_form.html.twig', {'button_label': 'Actualizar'}) }}
+
+    <hr>
+    
+    <div class="d-flex justify-content-between">
+        <a href="{{ path('consulta_new', {'id': paciente.id}) }}" title="Consulta"> 
+            <button class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-chevron-left"></i> Regresar a la consulta médica
+            </button>
+        </a>
+
+        {# Formulario de borrado si es necesario #}
+        {{ include('pacientes/_delete_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+$(document).ready(function() {
+
+    var $cieInput = $('#pacientes_tipo_discapacidad');
+
+    function initSelect2CIE() {
+
+        $cieInput.select2({
+            width: '100%',
+            theme: 'bootstrap4',
+            placeholder: '🔍 Busque y seleccione un diagnóstico...',
+            allowClear: true,
+            multiple: true,
+            closeOnSelect: false,
+            minimumResultsForSearch: 0,
+            dropdownAutoWidth: true,
+
+            ajax: {
+                url: '{{ path("select_cie") }}',
+                dataType: 'json',
+                delay: 300,
+
+                data: function (params) {
+
+                    var filtros = [];
+
+                    $('input[name^="pacientes[discapacidad]"]:checked').each(function () {
+                        filtros.push($(this).val());
+                    });
+
+                    return {
+                        q: params.term || '',
+                        filtros: filtros,
+                        page: params.page || 1
+                    };
+                },
+
+                processResults: function (data) {
+                    return {
+                        results: data.results,
+                        pagination: data.pagination
+                    };
+                },
+
+                cache: true
+            },
+
+            escapeMarkup: function(markup) { return markup; },
+
+            templateResult: function (data) {
+
+                if (data.loading) return data.text;
+
+                var parts = data.text.split(']');
+
+                if (parts.length > 1) {
+                    return '<div>' +
+                           '<span class="badge badge-primary mr-2">' +
+                           parts[0].replace('[','') +
+                           '</span>' +
+                           '<span>' + parts[1] + '</span>' +
+                           '</div>';
+                }
+
+                return data.text;
+            }
+        });
+    }
+
+    initSelect2CIE();
+
+    // Cuando cambia un checkbox SOLO recargar resultados, no borrar selección
+    $(document).on('change','input[name^="pacientes[discapacidad]"]', function(){
+
+        console.log("Checkbox cambiado");
+
+        if ($cieInput.data('select2').isOpen()) {
+            $cieInput.select2('close');
+            setTimeout(function(){
+                $cieInput.select2('open');
+            },100);
+        }
+
+    });
+
+});
+</script>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+        // Función centralizada para inicializar todos los Select2
+        function initSelect2() {
+            // 1. Selects normales y dinámicos (Provincia, Ciudad, Puesto de Trabajo, etc.)
+            $('select[data-select="true"]').not('#pacientes_tipo_discapacidad').select2({
+                width: '100%',
+                theme: 'bootstrap4',
+                placeholder: 'Seleccione una opción...',
+                allowClear: true
+            });
+
+            // 2. Select de CIE-10 (El que ya tenemos configurado)
+            var $cieInput = $('#pacientes_tipo_discapacidad');
+            if ($cieInput.length > 0) {
+                // Aquí va la configuración AJAX del CIE-10 que ya tienes funcionando...
+                // (Omitido por brevedad, mantén el que configuramos antes)
+            }
+        }
+
+        // Inicialización al cargar la página
+        initSelect2();
+
+        // --- LÓGICA PROVINCIA -> CIUDAD (CANTON) ---
+        $(document).on('change', '#pacientes_Provincia', function () {
+            var $provincia = $(this);
+            var $form = $provincia.closest('form');
+            var data = {};
+            
+            // Preparamos la data para enviar (Provincia seleccionada + Token)
+            data[$provincia.attr('name')] = $provincia.val();
+            data[$('#pacientes__token').attr('name')] = $('#pacientes__token').val();
+
+            // Opcional: Mostrar que está cargando
+            var $ciudadSelect = $('#pacientes_Ciudad');
+            $ciudadSelect.prop('disabled', true);
+
+            // Enviamos el POST a la misma ruta donde estamos (el FormModifier de Symfony hará el resto)
+            $.ajax({
+                url: $form.attr('action') || window.location.href,
+                type: 'POST',
+                data: data,
+                success: function (html) {
+                    // Reemplazamos solo el select de Ciudad con el nuevo HTML
+                    var $newCiudad = $(html).find('#pacientes_Ciudad');
+                    $('#pacientes_Ciudad').replaceWith($newCiudad);
+                    
+                    // IMPORTANTE: Volver a inicializar Select2 en el nuevo elemento
+                    initSelect2();
+                },
+                error: function() {
+                    $ciudadSelect.prop('disabled', false);
+                }
+            });
+        });
+
+        // Lógica para labels de archivos (fotos)
+        $(document).on('change', '.custom-file-input', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+    });
+</script>
+{% endblock %}

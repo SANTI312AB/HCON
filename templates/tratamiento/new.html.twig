@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Tratamiento{% endblock %}
+
+{% block body %}
+<style>
+        /* 1. Controla la altura del despliegue y activa el scroll */
+       /* Estilo para las etiquetas seleccionadas */
+
+    /* Recuperar y personalizar el scroll de los resultados */
+    .select2-results__options {
+        max-height: 250px !important; /* Ajusta la altura máxima a tu gusto */
+        overflow-y: auto !important;  /* Forza la aparición del scroll vertical */
+    }
+
+    /* Estilizar la barra de scroll para que sea más moderna (opcional) */
+    .select2-results__options::-webkit-scrollbar {
+        width: 8px;
+    }
+    .select2-results__options::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .select2-results__options::-webkit-scrollbar-thumb {
+        background: #007bff;
+        border-radius: 4px;
+    }
+
+    /* Estilo para las etiquetas (tags) seleccionadas para que no rompan el layout */
+    .select2-container--bootstrap4 .select2-selection--multiple {
+        min-height: 38px !important;
+        height: auto !important;
+        padding-bottom: 5px;
+    }
+
+    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff !important;
+        border: none !important;
+        color: white !important;
+        margin-top: 5px !important;
+        padding: 2px 10px !important;
+    }
+
+    .select2-dropdown {
+    max-height: 300px;
+    overflow: hidden;
+}
+
+.select2-results__options {
+    max-height: 250px !important;
+    overflow-y: auto !important;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple::after {
+    content: "\f067"; /* icono plus */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: #007bff;
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    font-size: 14px;
+    pointer-events: none;
+}
+</style>
+<h6>Paciente: <b>{{diagnostico.pacientes.pnombre }} {{diagnostico.pacientes.snombre }} {{diagnostico.pacientes.papellido }} {{diagnostico.pacientes.sapellido }}</h6></b>
+<h6>Diagnóstico CIE: <b>{{diagnostico.cie.codigo}}-{{diagnostico.cie.descripcion}}</h6></b>
+{% for flash_message in app.session.flashbag.get('exito') %}
+<div class="alert alert-success" role="alert">
+       {{ flash_message }}
+</div>
+{% endfor %}
+    {{ include('tratamiento/_form.html.twig') }}
+
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Medicamento</th>
+                <th>Dosis</th>
+                <th>Frecuencia</th>
+                <th>Duración</th>
+                <th>Indicaciones</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody  id="articles">
+        {% for tratamiento in tratamientos %}
+            <tr>
+            <td>
+             {% if  tratamiento.medicamentos.codigo is defined and tratamiento.medicamentos.codigo  is null   and  tratamiento.medicamentos.descripcion is defined and tratamiento.medicamentos.descripcion is null  %}
+               {% elseif  tratamiento.medicamentos.codigo is defined and tratamiento.medicamentos.codigo is not null  and  tratamiento.medicamentos.descripcion is defined and tratamiento.medicamentos.descripcion is not null  %}
+                {{ tratamiento.medicamentos.codigo }}-{{tratamiento.medicamentos.descripcion}}
+               {% endif %}
+                </td>
+                <td>{{ tratamiento.dosis }}</td>
+                <td>{{ tratamiento.frecuencia }}</td>
+                <td>{{ tratamiento.duracion }}</td>
+                <td>{{ tratamiento.indicaciones }}</td>
+
+                <td>  
+                      <a href="#" class="dropdown-item delete-article" data-id="{{tratamiento.id}}" style="font-size: 0.8em">Eliminar</a> 
+                       <a href="{{ path('tratamiento_edit', {id:tratamiento.id ,p: diagnostico.pacientes.id, d: diagnostico.id,c:consulta.id}) }}" class="dropdown-item"  style="font-size: 0.8em">Editar</a> 
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">No Existen Registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+  <a href="{{ path('diagnostico_new', {id: paciente.id, c: consulta.id}) }}"> 
+<button class="btn btn-block btn-outline-primary btn-sm">
+<i class="fas fa-chevron-left">REGRESAR A DIAGNÓSTICO Y TRATAMIENTO</i>
+</button>
+</a>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+
+
+  <script type="text/javascript">
+     $(document).ready(function() {
+    $('.select2-ajax-medicamentos').each(function() {
+        var $select = $(this);
+
+        $select.select2({
+            theme: 'bootstrap4',
+            language: "es",
+            allowClear: true,
+            placeholder: '🔍 Escriba el nombre o código...',
+            minimumInputLength: 3,
+            ajax: {
+                url: '{{ path("medicamentos_data") }}',
+                dataType: 'json',
+                delay: 400,
+                data: function (params) {
+                    return {
+                        "search": { "value": params.term }, 
+                        "start": 0,
+                        "length": 20 
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                // Importante: el 'text' debe ser igual al choice_label del PHP
+                                text: "[" + item.codigo + "] " + item.descripcion
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+
+        // LÓGICA DE EDICIÓN:
+        // Si el select ya tiene una opción cargada por Symfony (EntityType), 
+        // Select2 la tomará automáticamente como valor inicial.
+    });
+});
+</script>
+
+
+     <script>
+
+  const articles = document.getElementById('articles');
+   if (articles) {
+     articles.addEventListener('click', e => {
+       if (e.target.className === 'dropdown-item delete-article') {
+         if (confirm('Esta seguro de eliminar este elemento?')) {
+             const value = e.target.getAttribute('data-id');
+             let route = "{{ path('tratamiento_delete', { id: 'fileId_' }) }}";
+             route = route.replace('fileId_', value);
+   
+           fetch(route, {
+             method: 'DELETE'
+           }).then(res => window.location.reload());
+         }
+       }
+     });
+   };
+  </script>
+  
+
+ 
+
+
+  
+
+   {% endblock %}

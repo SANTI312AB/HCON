@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Evolucion{% endblock %}
+
+{% block body %}
+<div class="card-body p-5 bg-white rounded">
+      <h6>Editar Evolucion Medidca del Paciente:  <b>{{paciente.pnombre}} {{paciente.snombre}} {{paciente.papellido}} {{paciente.sapellido}}</b></h6>
+
+    {{ include('evolucion/_form.html.twig', {'button_label': 'Editar'}) }}
+
+    <a href="{{ path('app_evolucion_new', {id: paciente.id, c:consulta.id}) }}">
+     <button class="btn btn-block btn-outline-warning btn-sm">
+        <i class="fas fa-chevron-left">Regresar a la ficha médica</i>
+    </button>
+      </a>
+</div>
+{% endblock %}

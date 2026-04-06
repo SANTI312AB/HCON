@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Certificado index{% endblock %}
+
+{% block body %}
+    <h1>Certificado index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Certificado</th>
+                <th>Fecha_inicio</th>
+                <th>Fecha_final</th>
+                <th>Tipo_contingencia</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for certificado in certificados %}
+            <tr>
+                <td>{{ certificado.id }}</td>
+                <td>{{ certificado.certificado }}</td>
+                <td>{{ certificado.fechaInicio ? certificado.fechaInicio|date('Y-m-d') : '' }}</td>
+                <td>{{ certificado.fechaFinal ? certificado.fechaFinal|date('Y-m-d') : '' }}</td>
+                <td>{{ certificado.tipoContingencia }}</td>
+                <td>
+                    <a href="{{ path('app_certificado_show', {'id': certificado.id}) }}">ver</a>
+                    <a href="{{ path('app_certificado_edit', {'id': certificado.id}) }}">editar</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_certificado_new') }}">Create new</a>
+{% endblock %}

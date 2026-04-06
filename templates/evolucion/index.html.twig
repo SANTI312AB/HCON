@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evolucion index{% endblock %}
+
+{% block body %}
+    <h1>Evolucion index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Descripción</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for evolucion in evolucions %}
+            <tr>
+                <td>{{ evolucion.id }}</td>
+                <td>{{ evolucion.descripción }}</td>
+                <td>
+                    <a href="{{ path('app_evolucion_show', {'id': evolucion.id}) }}">show</a>
+                    <a href="{{ path('app_evolucion_edit', {'id': evolucion.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_evolucion_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,24 @@
+<h5 class="header-purple-a">L. APTITUD MÉDICA PARA EL TRABAJO</h5>
+
+{# Representación visual de la Aptitud con tus variables originales #}
+<div class="row border m-0 p-3">
+    <div class="col-4 border-right text-center">
+        <b>APTO</b> <br>
+        {# Comparamos con el valor que guardas en tipoaptitud #}
+        [ {{ consulta.tipoaptitud == 'Apto' ? 'X' : ' ' }} ]
+    </div>
+    <div class="col-4 border-right text-center">
+        <b>APTO EN OBSERVACIÓN</b> <br>
+        [ {{ consulta.tipoaptitud == 'Apto en Observación' or consulta.tipoaptitud == 'Apto Observacion' ? 'X' : ' ' }} ]
+    </div>
+    <div class="col-4 text-center">
+        <b>NO APTO</b> <br>
+        [ {{ consulta.tipoaptitud == 'No Apto' ? 'X' : ' ' }} ]
+    </div>
+     <div class="row">
+        <div class="col-12">
+            <strong>Observaciones:</strong> 
+            <p>{{ consulta.observaciones|default('Sin observaciones.') }}</p>
+        </div>
+    </div>
+</div>

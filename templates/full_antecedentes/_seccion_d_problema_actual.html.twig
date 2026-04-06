@@ -1,0 +1,6 @@
+{# D. ENFERMEDAD O PROBLEMA ACTUAL #}
+<h5 class="header-purple-a">D. ENFERMEDAD O PROBLEMA ACTUAL</h5>
+<div class="border p-2" style="min-height: 80px;">
+    {# Usamos 'consulta' en lugar de 'antp' #}
+{{ consulta.enfermedadactual|default('Paciente asintomático / No refiere.') }}
+</div>

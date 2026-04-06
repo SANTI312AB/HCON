@@ -1,0 +1,117 @@
+
+<h5 class="header-purple-a">
+    A. DATOS DEL ESTABLECIMIENTO - DATOS DEL USUARIO
+</h5>
+<table class="table-datos">
+    <tbody>
+        {# Fila 1: Etiquetas Institución, RUC, CIIU, etc. #}
+        <tr>
+            <td colspan="4" class="label-green-a">INSTITUCIÓN DEL SISTEMA</td>
+            <td colspan="1" class="label-green-a">RUC</td>
+            <td colspan="1" class="label-green-a">CIIU</td>
+            <td colspan="4" class="label-green-a">ESTABLECIMIENTO / CENTRO DE TRABAJO</td>
+            <td colspan="1" class="label-green-a">NÚMERO DE HISTORIA CLÍNICA</td>
+            <td colspan="1" class="label-green-a">NÚMERO DE ARCHIVO</td>
+        </tr>
+        {# Fila 2: Valores Fila 1 #}
+        <tr>
+            <td colspan="4" class="value-cell-a">FUNDACIÓN ESPOIR</td>
+            <td colspan="1" class="value-cell-a">1791789806001</td>
+            <td colspan="1" class="value-cell-a">N/A</td>
+            <td colspan="4" class="value-cell-a">{{ paciente.unidadesoperativas.nombre }}</td>
+            <td colspan="1" class="value-cell-a">{{ paciente.historiaclinica }}</td>
+            <td colspan="1" class="value-cell-a">{{ paciente.cedula }}</td>
+        </tr>
+
+        {# Fila 3: Etiquetas Apellidos y Nombres #}
+        <tr>
+            <td colspan="3" class="label-green-a">PRIMER APELLIDO</td>
+            <td colspan="3" class="label-green-a">SEGUNDO APELLIDO</td>
+            <td colspan="3" class="label-green-a">PRIMER NOMBRE</td>
+            <td colspan="3" class="label-green-a">SEGUNDO NOMBRE</td>
+        </tr>
+        {# Fila 4: Valores Apellidos y Nombres #}
+        <tr>
+            <td colspan="3" class="value-cell-a">{{ paciente.papellido }}</td>
+            <td colspan="3" class="value-cell-a">{{ paciente.sapellido }}</td>
+            <td colspan="3" class="value-cell-a">{{ paciente.pnombre }}</td>
+            <td colspan="3" class="value-cell-a">{{ paciente.snombre }}</td>
+        </tr>
+
+        {# Fila 5: Etiquetas Complejas (Atención Prioritaria, Sexo, Nacimiento, etc) #}
+        <tr>
+            <td colspan="3" class="label-green-a">GRUPO DE ATENCIÓN PRIORITARIA</td>
+            <td colspan="1" class="label-green-a">SEXO</td>
+            <td colspan="3" class="label-green-a">FECHA DE NACIMIENTO</td>
+            <td colspan="1" class="label-green-a">EDAD</td>
+            <td colspan="2" class="label-green-a">GRUPO SANGUÍNEO</td>
+            <td colspan="2" class="label-green-a">LATERALIDAD</td>
+        </tr>
+
+        {# Fila 6: Valores de la Fila 5 con sub-celdas para Sexo y Fecha #}
+        <tr>
+            {# Atención Prioritaria #}
+            <td colspan="3" class="p-0">
+                <table class="w-100 h-100" style="border:none;">
+                    <tr>
+                        <td class="label-green-a vertical-text" style="width:25%">Embarazada</td>
+                        <td class="label-green-a vertical-text" style="width:25%">Persona con Discapacidad</td>
+                        <td class="label-green-a vertical-text" style="width:25%">E. Catastrófica</td>
+                        <td class="label-green-a vertical-text" style="width:25%">Adulto Mayor</td>
+                    </tr>
+                    <tr>
+                        <td class="value-cell-a">{% if paciente.embarazada ?? false %}X{% endif %}</td>
+                        <td class="value-cell-a">{{ paciente.discapacidad ? 'X' : '' }}</td>
+                        <td class="value-cell-a">{% if paciente.catastrofica ?? false %}X{% endif %}</td>
+                        <td class="value-cell-a">{{ (date('now').diff(date(paciente.fechaNacimiento)).y >= 65) ? 'X' : '' }}</td>
+                    </tr>
+                </table>
+            </td>
+
+            {# Sexo #}
+            <td colspan="1" class="p-0">
+                <table class="w-100 h-100" style="border:none;">
+                    <tr>
+                        <td class="label-green-a" style="font-size:0.6rem">Hombre</td>
+                        <td class="label-green-a" style="font-size:0.6rem">Mujer</td>
+                    </tr>
+                    <tr>
+                        <td class="value-cell-a">{{ paciente.sexo == 'Hombre' ? 'X' : '' }}</td>
+                        <td class="value-cell-a">{{ paciente.sexo == 'Mujer' ? 'X' : '' }}</td>
+                    </tr>
+                </table>
+            </td>
+
+            {# Fecha de Nacimiento #}
+            <td colspan="3" class="p-0">
+                <table class="w-100 h-100" style="border:none;">
+                    <tr>
+                        <td class="label-green-a" style="font-size:0.6rem">año</td>
+                        <td class="label-green-a" style="font-size:0.6rem">mes</td>
+                        <td class="label-green-a" style="font-size:0.6rem">día</td>
+                    </tr>
+                    <tr>
+                        <td class="value-cell-a">{{ paciente.fechaNacimiento|date('Y') }}</td>
+                        <td class="value-cell-a">{{ paciente.fechaNacimiento|date('m') }}</td>
+                        <td class="value-cell-a">{{ paciente.fechaNacimiento|date('d') }}</td>
+                    </tr>
+                </table>
+            </td>
+
+            {# Edad #}
+            <td colspan="1" class="value-cell-a">
+                {{ date('now').diff((date(paciente.fechaNacimiento))).format('%y') }}
+            </td>
+
+            {# Grupo Sanguíneo #}
+            <td colspan="2" class="value-cell-a">
+                {{ paciente.tiposangre }}
+            </td>
+
+            {# Lateralidad #}
+            <td colspan="2" class="value-cell-a">
+                {{ paciente.lateralidad }}
+            </td>
+        </tr>
+    </tbody>
+</table>

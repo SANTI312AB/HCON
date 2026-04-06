@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_certificado_delete', {'id': certificado.id}) }}" onsubmit="return confirm('¿Estás seguro/a de que quieres eliminar este artículo?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ certificado.id) }}">
+    <button class="btn">Delete</button>
+</form>

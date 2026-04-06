@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Certificado{% endblock %}
+
+{% block body %}
+    <h1>Certificado</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ certificado.id }}</td>
+            </tr>
+            <tr>
+                <th>Certificado</th>
+                <td>{{ certificado.certificado }}</td>
+            </tr>
+            <tr>
+                <th>Fecha_inicio</th>
+                <td>{{ certificado.fechaInicio ? certificado.fechaInicio|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Fecha_final</th>
+                <td>{{ certificado.fechaFinal ? certificado.fechaFinal|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Tipo_contingencia</th>
+                <td>{{ certificado.tipoContingencia }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_certificado_index') }}">regresar a la lista</a>
+
+    <a href="{{ path('app_certificado_edit', {'id': certificado.id}) }}">editar</a>
+
+    {{ include('certificado/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Certificado{% endblock %}
+
+{% block body %}
+ <style>
+    /* Fuentes modernas */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header {
+        text-align: center;
+        border-bottom: 2px solid #eaeaea;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    header img {
+        max-width: 120px;
+        margin-bottom: 10px;
+    }
+
+    header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #007bff;
+        margin-bottom: 5px;
+    }
+
+    header h6 {
+        font-size: 0.95rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .section {
+        margin-bottom: 30px;
+    }
+
+    .section h5 {
+        font-size: 1.4rem;
+        color: #007bff;
+        font-weight: 500;
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 5px;
+    }
+
+    .section p {
+        margin-bottom: 10px;
+        line-height: 1.5;
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .signature {
+        text-align: center;
+        margin-top: 40px;
+        border-top: 1px solid #eaeaea;
+        padding-top: 10px;
+    }
+
+    .signature h6 {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .signature p {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    /* Botón de imprimir */
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 20px;
+        color: white;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    /* Tooltip */
+    .tooltip {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-left: 10px;
+    }
+
+    /* Estilo de listas */
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    ul li {
+        font-size: 1rem;
+        padding: 5px 0;
+        border-bottom: 1px solid #eaeaea;
+    }
+</style>
+
+<div class="card-body p-5 bg-white rounded">
+
+    {{ include('full_antecedentes/ant_base.html.twig') }}
+
+    {{ include('certificado/_form.html.twig') }}
+    <br>
+
+
+
+</a><br>
+<br>
+
+<a href="javascript:void(0);" id="print_Button_Full" class="btn btn-block btn-primary" align="left">
+    <i class="fas fa-print"></i> Imprimir Certificado Médico
+    <span class="tooltip">Haz clic para imprimir el certificado</span>
+</a>
+
+
+<div class="content">
+     <div class="container">
+    <header>
+        <img src="https://jgecuador.com/wp-content/uploads/2024/07/rlogo.png" alt="rlogo">
+        <h6>Av. 10 de agosto y Naciones Unidades, Edificio Comandato,</h6> 
+        <h6>Torre Iñaquito, 4to. Piso, teléfono: 022270702</h6>
+        <h2>Certificado Médico</h2>
+    </header>
+
+    <div class="section">
+        {# Formato de fecha para consulta.fechaatencion #}
+        <p>Fecha: <strong>{{ consulta.fechaatencion ? consulta.fechaatencion|date('j \\d\\e F \\d\\e\\l Y', 'Europe/Madrid')|replace({
+            'January': 'enero',
+            'February': 'febrero',
+            'March': 'marzo',
+            'April': 'abril',
+            'May': 'mayo',
+            'June': 'junio',
+            'July': 'julio',
+            'August': 'agosto',
+            'September': 'septiembre',
+            'October': 'octubre',
+            'November': 'noviembre',
+            'December': 'diciembre'
+        }) : '' }}</strong></p>
+        <p>CERTIFICO que el/la Sr/Sra/Srta: <strong>{{ paciente.pnombre }} {{ paciente.snombre }} {{ paciente.papellido }} {{ paciente.sapellido }}</strong>, con número de cédula: <strong>{{ paciente.cedula }}</strong>,</p>
+        <p>fue atendido/a por presentar:</p>
+        <ul>
+            {% for diagnostico in diagnosticos %}
+                <li>{{ diagnostico.cie.codigo }} - {{ diagnostico.cie.descripcion }}</li>
+            {% endfor %}
+        </ul>
+
+        {% set diffInSeconds = certificado.fechafinal|date('U') - certificado.fechainicio|date('U') %}
+        {% set diffInDays = ((diffInSeconds + 86400) / 86400)|abs|round(0, 'ceil') %}
+
+        {# Formato de fecha para certificado.fechainicio y certificado.fechafinal #}
+        <p>{{ certificado.licencia }}: <strong>{{ diffInDays }} día(s)</strong> 
+        
+<p>Desde el <strong>
+    {% if certificado.fechainicio %}
+    {{ certificado.fechainicio|date('l', 'Europe/Madrid')|replace({
+        'Monday': 'LUNES',
+        'Tuesday': 'MARTES',
+        'Wednesday': 'MIÉRCOLES',
+        'Thursday': 'JUEVES',
+        'Friday': 'VIERNES',
+        'Saturday': 'SÁBADO',
+        'Sunday': 'DOMINGO'
+    }) }}
+    {{ certificado.fechainicio|date('d/m/Y', 'Europe/Madrid') }}
+    ({{ certificado.fechainicio|date(' j \\D\\E F \\D\\E\\L Y', 'Europe/Madrid')|replace({
+        1:'UNO', 2:'DOS', 3:'TRES', 4:'CUATRO', 5:'CINCO', 6:'SEIS', 7:'SIETE', 8:'OCHO', 9:'NUEVE', 10:'DIEZ', 
+        11:'ONCE', 12:'DOCE', 13:'TRECE', 14:'CATORCE', 15:'QUINCE', 16:'DIECISEIS', 17:'DIECISIETE', 18:'DIECIOCHO', 
+        19:'DIECINUEVE', 20:'VEINTE', 21:'VEINTEUNO', 22:'VEINTIDOS', 23:'VEINTITRES', 24:'VEINTICUATRO', 
+        25:'VEINTICINCO', 26:'VEINTISEIS', 27:'VEINTISIETE', 28:'VEINTIOCHO', 29:'VEINTINUEVE', 30:'TREINTA', 
+        31:'TREINTA Y UNO',
+        'January': 'ENERO', 'February': 'FEBRERO', 'March': 'MARZO', 'April': 'ABRIL', 'May': 'MAYO', 'June': 'JUNIO', 
+        'July': 'JULIO', 'August': 'AGOSTO', 'September': 'SEPTIEMBRE', 'October': 'OCTUBRE', 'November': 'NOVIEMBRE', 
+        'December': 'DICIEMBRE'
+    }) }})
+    {% endif %}
+</strong>
+hasta el <strong>
+    {% if certificado.fechafinal %}
+    {{ certificado.fechafinal|date('l', 'Europe/Madrid')|replace({
+        'Monday': 'LUNES',
+        'Tuesday': 'MARTES',
+        'Wednesday': 'MIÉRCOLES',
+        'Thursday': 'JUEVES',
+        'Friday': 'VIERNES',
+        'Saturday': 'SÁBADO',
+        'Sunday': 'DOMINGO'
+    }) }}
+    {{ certificado.fechafinal|date('d/m/Y', 'Europe/Madrid') }}
+    ({{ certificado.fechafinal|date(' j \\D\\E F \\D\\E\\L Y', 'Europe/Madrid')|replace({
+        1:'UNO', 2:'DOS', 3:'TRES', 4:'CUATRO', 5:'CINCO', 6:'SEIS', 7:'SIETE', 8:'OCHO', 9:'NUEVE', 10:'DIEZ', 
+        11:'ONCE', 12:'DOCE', 13:'TRECE', 14:'CATORCE', 15:'QUINCE', 16:'DIECISEIS', 17:'DIECISIETE', 18:'DIECIOCHO', 
+        19:'DIECINUEVE', 20:'VEINTE', 21:'VEINTEUNO', 22:'VEINTIDOS', 23:'VEINTITRES', 24:'VEINTICUATRO', 
+        25:'VEINTICINCO', 26:'VEINTISEIS', 27:'VEINTISIETE', 28:'VEINTIOCHO', 29:'VEINTINUEVE', 30:'TREINTA', 
+        31:'TREINTA Y UNO',
+        'January': 'ENERO', 'February': 'FEBRERO', 'March': 'MARZO', 'April': 'ABRIL', 'May': 'MAYO', 'June': 'JUNIO', 
+        'July': 'JULIO', 'August': 'AGOSTO', 'September': 'SEPTIEMBRE', 'October': 'OCTUBRE', 'November': 'NOVIEMBRE', 
+        'December': 'DICIEMBRE'
+    }) }})
+    {% endif %}
+</strong></p>
+
+
+
+        <p><strong>HISTORIA CLÍNICA:</strong> {{ paciente.cedula }}</p>
+        <p><strong>TIPO DE CONTINGENCIA:</strong> {{ certificado.tipocontingencia }}</p>
+    </div>
+    <div class="section">
+        <h5>DATOS LABORALES DEL/LA PACIENTE</h5>
+        <p><strong>DIRECCIÓN DOMICILIARIA:</strong> {{ paciente.calleprincipal }} {{ paciente.callesecundaria }}, Sector: {{ paciente.sector }}.</p>
+        <p><strong>TELÉFONO DEL/LA PACIENTE:</strong> {{ paciente.celular }}.</p>
+        <p><strong>EMPRESA/INSTITUCIÓN:</strong> {{ certificado.empresa }}.</p>
+        <p><strong>PUESTO DE TRABAJO:</strong> {{ paciente.puestotrabajo.nombre }}.</p>   
+        <p><strong>CONTACTO:</strong> {{ certificado.contacto }},<strong>TELÉFONO:</strong> {{ certificado.telefono }}.</p>
+        
+    </div>
+
+    <div class="signature">
+        <h6>(f)___________________________________________________</h6>
+        <h6>Dr/Dra: <b>{{ consulta.employed.Nombre }} {{ consulta.employed.Apellido }}</b>.</h6> 
+        <h6>Especialidad: <b>{{ consulta.employed.Profesion }}</b>.</h6>
+        <h6>CI: <b>{{ consulta.employed.Cedula }}</b>./ Código Médico:  <b>{{ consulta.employed.codigomedico }}</b> </h6>
+    </div>
+</div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+<script type="text/javascript">
+    window.onload = function() {
+        document.getElementById("op16").style = "background-color: #FDF4BC;";
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Asegúrate de incluir jQuery -->
+<script src="https://cdn.rawgit.com/DoersGuild/jQuery.print/master/jQuery.print.js"></script> <!-- Incluye jQuery.print -->
+<script>
+  $(document).ready(function(){
+       $("#print_Button_Full").click(function(){
+          $("div.content").print({ // Utiliza la función print de jQuery.print
+              globalStyles: true, // Conserva los estilos globales de la página
+              mediaPrint: true, // Incluye los estilos de impresión definidos en la hoja de estilos
+              stylesheet: null, // No utilizará ningún archivo de hoja de estilos adicional
+              noPrintSelector: ".no-print", // Evita imprimir elementos con la clase 'no-print'
+              iframe: true // Utiliza un iframe para imprimir
+          });
+      });
+  });
+</script>
+{% endblock %}

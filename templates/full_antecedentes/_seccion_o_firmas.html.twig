@@ -1,0 +1,41 @@
+<h5 class="header-purple-a" >O. DATOS DEL PROFESIONAL DE SALUD</h5>
+<div class="row mt-5">
+    {# O. DATOS DEL PROFESIONAL #}
+    <div class="col-6">
+        
+        <div class="mt-4 pt-2 text-center" style="width: 90%;">
+            {# Espacio para la firma física #}
+            <div class="mb-2">__________________________________________</div>
+            
+            <strong>Dr/Dra: {{ consulta.employed.Nombre }} {{ consulta.employed.Apellido }}</strong><br>
+            <span class="small">
+                Especialidad: {{ consulta.employed.Profesion }}<br>
+                CI: {{ consulta.employed.Cedula }} / Código: {{ consulta.employed.codigomedico }}<br>
+                Fecha Atención: {{ consulta.fechaAtencion ? consulta.fechaAtencion|date('Y-m-d H:i') : '' }}
+            </span>
+            <br><br>
+            <small class="text-muted">FIRMA DEL SERVIDOR</small>
+        </div>
+    </div>
+
+    {# P. FIRMA Y HUELLA DEL TRABAJADOR #}
+    <div class="col-6">
+        <div class="row mt-4">
+            <div class="col-8 text-center">
+                {# Espacio para la firma física #}
+                <div class="mb-2">__________________________________________</div>
+                
+                <strong>{{ paciente.pnombre }} {{ paciente.snombre }} {{ paciente.papellido }} {{ paciente.sapellido }}</strong><br>
+                <span class="small">C.I. {{ paciente.cedula }}</span><br>
+                <small class="text-muted">FIRMA DEL PACIENTE</small>
+            </div>
+            
+            {# Recuadro para la huella dactilar (Requerido por MSP) #}
+            <div class="col-4">
+                <div class="border" style="height: 100px; width: 80px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: center; border: 1px solid #ccc !important;">
+                    <small class="text-muted" style="font-size: 9px; margin-bottom: 5px;">HUELLA</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

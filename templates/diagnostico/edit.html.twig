@@ -1,0 +1,164 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Diagnostico{% endblock %}
+
+{% block body %}
+
+<style>
+        /* 1. Controla la altura del despliegue y activa el scroll */
+       /* Estilo para las etiquetas seleccionadas */
+
+    /* Recuperar y personalizar el scroll de los resultados */
+    .select2-results__options {
+        max-height: 250px !important; /* Ajusta la altura máxima a tu gusto */
+        overflow-y: auto !important;  /* Forza la aparición del scroll vertical */
+    }
+
+    /* Estilizar la barra de scroll para que sea más moderna (opcional) */
+    .select2-results__options::-webkit-scrollbar {
+        width: 8px;
+    }
+    .select2-results__options::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .select2-results__options::-webkit-scrollbar-thumb {
+        background: #007bff;
+        border-radius: 4px;
+    }
+
+    /* Estilo para las etiquetas (tags) seleccionadas para que no rompan el layout */
+    .select2-container--bootstrap4 .select2-selection--multiple {
+        min-height: 38px !important;
+        height: auto !important;
+        padding-bottom: 5px;
+    }
+
+    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff !important;
+        border: none !important;
+        color: white !important;
+        margin-top: 5px !important;
+        padding: 2px 10px !important;
+    }
+
+    .select2-dropdown {
+    max-height: 300px;
+    overflow: hidden;
+}
+
+.select2-results__options {
+    max-height: 250px !important;
+    overflow-y: auto !important;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple::after {
+    content: "\f067"; /* icono plus */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: #007bff;
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+</style>
+<div class="card-body p-5 bg-white rounded">
+    <h6>Editar Diagnóstico para el/la Paciente: <b> {{diagnostico.pacientes.pnombre}} {{diagnostico.pacientes.snombre}} {{diagnostico.pacientes.papellido}} {{diagnostico.pacientes.sapellido}}</b></h6>
+    <h6>Motivo de la Consulta: <b>{{ diagnostico.consulta.motivoconsulta }}</b>  Fecha: <b>{{ diagnostico.consulta.fechaatencion  ? diagnostico.consulta.fechaatencion|date('Y-m-d') : '' }}</b> Médico: <b>{{consulta.employed.Nombre }} {{consulta.employed.Apellido }}</b></h6>
+</br>
+{% for flash_message in app.session.flashbag.get('exito') %}
+<div class="alert alert-success" role="alert">
+       {{ flash_message }}
+</div>
+{% endfor %}
+    {{ include('diagnostico/_form.html.twig', {'button_label': ' Actualizar'}) }}
+    
+    <a href="{{ path('diagnostico_new', {id: paciente.id, c: consulta.id}) }}">
+    
+    <button class="btn btn-block btn-outline-warning btn-sm">
+<i class="fas fa-chevron-left">Regresar a ficha médica</i>
+</button>
+      </a>
+
+</div>
+{% endblock %}
+
+
+{% block javascripts %}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Seleccionamos el input por su clase (la que pusimos en el FormType)
+        var $selectCie = $('.select2-ajax-cie');
+
+        $('.select2-ajax-cie').select2({
+    theme: 'bootstrap4',
+    width: '100%',
+    placeholder: '🔍 Escriba código o nombre de la enfermedad...',
+    allowClear: true,
+    minimumInputLength: 2,
+    ajax: {
+        url: '{{ path("select_cie") }}',
+        dataType: 'json',
+        delay: 400,
+        data: function (params) {
+            return {
+                q: params.term,
+                page: params.page || 1
+            };
+        },
+        processResults: function (data) {
+            // No cambiamos nada aquí porque el controlador manda la descripción como ID
+            return {
+                results: data.results,
+                pagination: data.pagination
+            };
+        },
+        cache: true
+    },
+    language: {
+        inputTooShort: function() { return "Ingrese 2 o más caracteres..."; },
+        searching: function() { return "Buscando en CIE-10..."; },
+        noResults: function() { return "No se encontraron coincidencias"; }
+    },
+    escapeMarkup: function (markup) { return markup; },
+    templateResult: function(repo) {
+        if (repo.loading) return repo.text;
+        return "<div class='select2-result-cie'>" + repo.text + "</div>";
+    },
+    templateSelection: function (repo) {
+        // Esta es la parte clave: mostrar el texto completo en el input
+        return repo.text || repo.id;
+    }
+});
+        // Función para mostrar los resultados en el desplegable
+        function formatRepo(repo) {
+            if (repo.loading) return repo.text;
+            
+            // Si el texto viene en formato [CODIGO] DESCRIPCION
+            var markup = "<div class='select2-result-cie clearfix'>" +
+                         "<div class='select2-result-cie__meta'>" +
+                         "<div>" + repo.text + "</div>" +
+                         "</div></div>";
+            return markup;
+        }
+
+        // Función para mostrar el item seleccionado
+        function formatRepoSelection(repo) {
+            return repo.text || repo.id;
+        }
+
+        // --- Lógica para Resaltado de Menú ---
+        var op8 = document.getElementById("op8");
+        if (op8) {
+            op8.style.backgroundColor = "#FDF4BC";
+        }
+    });
+</script>
+
+
+
+   {% endblock %}

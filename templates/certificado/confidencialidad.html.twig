@@ -1,0 +1,62 @@
+{# templates/salud_ocupacional/acuerdo_confidencialidad_completo.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Acuerdo de Confidencialidad Completo{% endblock %}
+
+{% block body %}    
+
+{% set meses = {
+    '01': 'enero', '02': 'febrero', '03': 'marzo', '04': 'abril',
+    '05': 'mayo', '06': 'junio', '07': 'julio', '08': 'agosto',
+    '09': 'septiembre', '10': 'octubre', '11': 'noviembre', '12': 'diciembre'
+} %}
+
+ <div class="no-print">
+        <div class="btn-group-vertical w-100">
+                <a href="{{ path('aptitud_edit', {id: consulta.id, p: consulta.pacientes.id}) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-chevron-left"></i> Regresar a la ficha médica
+                </a>
+ 
+            
+            <a href="javascript:void(0);" id="print_Button_Full" class="btn btn-primary mt-2">
+                <i class="fas fa-print"></i> Imprimir Reporte Completo
+            </a>
+        </div>
+    </div>
+
+<div class="content" id="printableArea">
+    
+   {% include 'certificado/certificado_data.html.twig' with {
+    'consulta': consulta, 
+    'meses': meses 
+} %}
+
+</div>
+{% endblock %}
+
+
+
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    $("#print_Button_Full").on("click", function() {
+        // Forzamos que el área sea visible antes de capturarla
+        $("#printableArea").show(); 
+
+        var options = { 
+            mode : 'iframe', 
+            popClose : true,
+            extraHead : '<meta charset="utf-8" /><style>body{margin:0;padding:0;}</style>', 
+            retainAttr : ["class", "style", "id"],
+            importCSS: true, 
+            importStyle: true,
+            copyTagClasses: true
+        };
+        
+        $("#printableArea").printArea(options);
+    });
+});
+</script>
+{% endblock %}
+
+

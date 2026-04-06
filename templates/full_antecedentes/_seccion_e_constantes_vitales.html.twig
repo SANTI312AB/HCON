@@ -1,0 +1,106 @@
+{# E. CONSTANTES VITALES Y ANTROPOMETRÍA #}
+{% set sv = consulta.signosvitales %}
+{% set imc = 0 %}
+{% if sv.peso and sv.estatura and sv.estatura > 0 %}
+    {% set imc = (sv.peso / (sv.estatura ** 2)) * 10000 %}
+{% endif %}
+
+<div class="section-e" style="margin-top: 20px;">
+<h5 class="header-purple-a" style="margin-top: 20px;">E. CONSTANTES VITALES Y ANTROPOMETRÍA</h5>
+
+<table class="table-datos">
+    <thead>
+        <tr class="label-green-a" style="font-size: 0.55rem; text-align: center;">
+            <th style="width: 11%;">TEMPERATURA (°C)</th>
+            <th style="width: 12%;">PRESIÓN ARTERIAL (mmHg)</th>
+            <th style="width: 11%;">FRECUENCIA CARDIACA (Lat/min)</th>
+            <th style="width: 11%;">FRECUENCIA RESPIRATORIA (fr/min)</th>
+            <th style="width: 11%;">SATURACIÓN DE OXÍGENO (O2%)</th>
+            <th style="width: 11%;">PESO (Kg)</th>
+            <th style="width: 11%;">TALLA (cm)</th>
+            <th style="width: 12%;">ÍNDICE DE MASA CORPORAL (kg/m2)</th>
+            <th style="width: 10%;">PERÍMETRO ABDOMINAL (cm)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="text-align: center; font-size: 0.75rem;">
+            {# TEMPERATURA #}
+            <td class="value-cell-a">
+                {{ sv.temperatura|default('—') }}<br>
+                <small style="font-size: 0.5rem; font-weight: bold;">
+                    {% if sv.temperatura %}
+                        {{ sv.temperatura >= 37 ? 'FIEBRE' : (sv.temperatura < 36 ? 'HIPOTERMIA' : 'NORMAL') }}
+                    {% endif %}
+                </small>
+            </td>
+
+            {# PRESIÓN ARTERIAL (Sístole / Diástole) #}
+            <td class="value-cell-a">
+                {{ sv.sistole|default('—') }} / {{ sv.diastole|default('—') }}<br>
+                <small style="font-size: 0.5rem; font-weight: bold;">
+                    {% if sv.sistole or sv.diastole %}
+                        {% if sv.sistole >= 140 or sv.diastole >= 90 %} HTA
+                        {% elseif sv.sistole >= 121 or sv.diastole >= 81 %} PHTA
+                        {% else %} NORMAL {% endif %}
+                    {% endif %}
+                </small>
+            </td>
+
+            {# FRECUENCIA CARDIACA #}
+            <td class="value-cell-a">
+                {{ sv.frecuenciacardiaca|default('—') }}<br>
+                <small style="font-size: 0.5rem; font-weight: bold;">
+                    {% if sv.frecuenciacardiaca %}
+                        {{ sv.frecuenciacardiaca >= 100 ? 'TAQUICARDIA' : (sv.frecuenciacardiaca <= 60 ? 'BRADICARDIA' : 'NORMAL') }}
+                    {% endif %}
+                </small>
+            </td>
+
+            {# FRECUENCIA RESPIRATORIA #}
+            <td class="value-cell-a">
+                {{ sv.frecuenciarespiratoria|default('—') }}<br>
+                <small style="font-size: 0.5rem; font-weight: bold;">
+                    {% if sv.frecuenciarespiratoria %}
+                        {{ sv.frecuenciarespiratoria > 20 ? 'TAQUIPNEA' : (sv.frecuenciarespiratoria < 12 ? 'BRADIPNEA' : 'NORMAL') }}
+                    {% endif %}
+                </small>
+            </td>
+
+            {# SATURACIÓN OXÍGENO #}
+            <td class="value-cell-a">
+                {{ sv.saturacionoxigeno|default('—') }}<br>
+                <small style="font-size: 0.5rem; font-weight: bold;">
+                    {% if sv.saturacionoxigeno %}
+                        {% if sv.saturacionoxigeno >= 95 %} NORMAL
+                        {% elseif sv.saturacionoxigeno >= 91 %} HIPOX. LEVE
+                        {% else %} HIPOX. SEVERA {% endif %}
+                    {% endif %}
+                </small>
+            </td>
+
+            {# PESO #}
+            <td class="value-cell-a">{{ sv.peso|default('—') }}</td>
+
+            {# TALLA #}
+            <td class="value-cell-a">{{ sv.estatura|default('—') }}</td>
+
+            {# IMC #}
+            <td class="value-cell-a">
+                {{ imc > 0 ? imc|number_format(2) : '—' }}<br>
+                <small style="font-size: 0.5rem; font-weight: bold;">
+                    {% if imc > 0 %}
+                        {% if imc < 18.5 %} BAJO PESO
+                        {% elseif imc <= 24.9 %} NORMAL
+                        {% elseif imc <= 29.9 %} SOBREPESO
+                        {% else %} OBESIDAD {% endif %}
+                    {% endif %}
+                </small>
+            </td>
+
+            {# PERÍMETRO ABDOMINAL #}
+            <td class="value-cell-a">{{ sv.perimetroabdominal|default('—') }}</td>
+        </tr>
+    </tbody>
+</table>
+
+</div>

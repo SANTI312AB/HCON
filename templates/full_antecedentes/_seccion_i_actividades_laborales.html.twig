@@ -1,0 +1,24 @@
+{# H. ACTIVIDADES EXTRA LABORALES #}
+<h5 class="header-purple-a" style="margin-top: 15px;">I.ACTIVIDADES EXTRA LABORALES</h5>
+<table class="table-riesgos">
+    <tbody>
+        <tr>
+            <td class="label-green-a" style="width: 25%;">DESCRIPCIÓN:</td>
+            <td class="value-cell-a" style="text-align: left;">
+                {% for ant_laborale in antl %}
+                    {{ ant_laborale.actextra }}{% if not loop.last %}; {% endif %}
+                {% else %}
+                    NINGUNA REFIERE
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+    .table-riesgos { width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed; }
+    .table-riesgos th, .table-riesgos td { border: 1px solid #000; padding: 2px; text-align: center; }
+    .check-cell { font-weight: bold; font-size: 1rem; background-color: #fff; width: 10.7%; }
+    .header-purple-a { background-color: #d1c4e9; padding: 5px; font-weight: bold; border: 1px solid #000; margin: 0; }
+    .label-green-a { background-color: #c8e6c9; font-size: 0.6rem; }
+</style>

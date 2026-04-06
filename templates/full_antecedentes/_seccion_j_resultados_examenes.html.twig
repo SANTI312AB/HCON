@@ -1,0 +1,26 @@
+{# J. RESULTADOS DE EXÁMENES #}
+<h5 class="header-purple-a">J. RESULTADOS DE EXÁMENES GENERALES Y ESPECÍFICOS DE ACUERDO AL RIESGO Y PUESTO DE TRABAJO</h5>
+<table class="table table-bordered table-sm" style="width:100%">
+    <thead class="bg-light">
+        <tr>
+            <th>Nombre examen</th>
+            <th>Fecha examen</th>
+            <th>Resultado examen</th>
+            <th>Observaciones</th>
+        </tr>
+    </thead>
+    <tbody id="articles5">
+        {% for examene in examenes %}
+            <tr>
+                <td>{{ examene.nombre_examen }}</td>
+                <td>{{ examene.fecha_examen ? examene.fecha_examen|date('Y-m-d') : '' }}</td>
+                <td>{{ examene.resultado_examen }}</td>
+                <td>{{ examene.Observaciones }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No Existen Registros</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

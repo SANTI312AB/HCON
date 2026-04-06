@@ -1,0 +1,49 @@
+{# Título con el estilo morado de la imagen #}
+<h5 class="header-purple-a">
+    N. RETIRO (evaluación)
+</h5>
+
+<table class="table table-bordered table-sm" style="border: 1px solid #000 !important; width: 100%;">
+    <tr>
+        {# Etiqueta Verde - Usando evaluacion_retiro #}
+        <td class="label-green-a" style="width: 60%; text-align: left; font-weight: normal; background-color: #ccffcc !important;">
+            SE REALIZA LA EVALUACIÓN
+        </td>
+        <td style="width: 10%; text-align: center; border: 1px solid #000;">SI</td>
+        <td style="width: 10%; text-align: center; border: 1px solid #000; font-weight: bold;">
+            {{ consulta.evaluacionRetiro|upper == 'SI' ? 'X' : '' }}
+        </td>
+        <td style="width: 10%; text-align: center; border: 1px solid #000;">NO</td>
+        <td style="width: 10%; text-align: center; border: 1px solid #000; font-weight: bold;">
+            {{ consulta.evaluacionRetiro|upper == 'NO' ? 'X' : '' }}
+        </td>
+    </tr>
+    <tr>
+        {# Etiqueta Verde - Usando condicion_salud #}
+        <td class="label-green-a" style="text-align: left; font-weight: normal; background-color: #ccffcc !important;">
+            LA CONDICIÓN DE SALUD ESTA RELACIONADA CON EL TRABAJO
+        </td>
+        <td style="text-align: center; border: 1px solid #000;">SI</td>
+        <td style="text-align: center; border: 1px solid #000; font-weight: bold;">
+            {{ consulta.condicionSalud|upper == 'SI' ? 'X' : '' }}
+        </td>
+        <td style="text-align: center; border: 1px solid #000;">NO</td>
+        <td style="text-align: center; border: 1px solid #000; font-weight: bold;">
+            {{ consulta.condicionSalud|upper == 'NO' ? 'X' : '' }}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" style="border: 1px solid #000; font-weight: bold; padding-left: 8px !important; background-color: #fff;">
+            Observación:
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" style="min-height: 50px; border: 1px solid #000; padding: 10px !important; vertical-align: top; background-color: #fff;">
+            {{ consulta.observacionesRetiro ?: 'S/N' }}
+            {# Simulación de líneas de escritura si está vacío #}
+            {% if not consulta.observacionesRetiro %}
+                <div style="border-bottom: 1px solid #ccc; margin-top: 15px;"></div>
+            {% endif %}
+        </td>
+    </tr>
+</table>

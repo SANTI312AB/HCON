@@ -1,0 +1,31 @@
+parameters:
+    fotos_directory: '%kernel.project_dir%/uploads'
+
+services:
+    _defaults:
+        autowire: true      
+        autoconfigure: true 
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # --- REGISTRO DE LOGS ---
+    
+    # Escucha cada petición HTTP para guardar el controlador y el status
+    #App\EventListener\LogRequestListener:
+        #tags:
+            #- { name: kernel.event_listener, event: kernel.response }
+
+    # Escucha cambios en Doctrine para guardar tabla e ID del registro
+    App\EventSubscriber\DoctrineLogSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber }

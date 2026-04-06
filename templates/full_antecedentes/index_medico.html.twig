@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reporte Historia Clínica Ocupacional{% endblock %}
+
+{% block body %}
+    {# 1. Lógica Radical: Médica vs El Resto #}
+    {% set esMedica = consulta.motivoconsulta == "Médica" %}
+
+    <div class="no-print">
+        <div class="btn-group-vertical w-100">
+            {% if esMedica %}
+                <a href="{{ path('app_certificado_new', {id: consulta.id}) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-chevron-left"></i> Regresar al certificado médico
+                </a>
+            {% else %}
+                <a href="{{ path('aptitud_edit', {id: consulta.id, p: paciente.id}) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-chevron-left"></i> Regresar a la ficha médica
+                </a>
+            {% endif %}
+            
+            <a href="javascript:void(0);" id="print_Button_Full" class="btn btn-primary mt-2">
+                <i class="fas fa-print"></i> Imprimir Reporte Completo
+            </a>
+        </div>
+    </div>
+
+    <div class="content" id="printableArea">
+        <style>
+            /* Optimizando espacio para que quepa todo el formulario */
+            .content { font-family: Arial, sans-serif; color: #000; background-color: white; line-height: 1.1; }
+            .content table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 5px; }
+            .content th, .content td { border: 1px solid #000 !important; padding: 3px !important; font-size: 0.7rem; vertical-align: middle; }
+            .content h4, .content h5 { background-color: #d1c4e9 !important; color: #000 !important; padding: 5px; border: 1px solid #000; margin-top: 8px; font-size: 0.8rem; text-transform: uppercase; }
+            .label-green-a, .content thead tr th { background-color: #ccffcc !important; font-weight: bold; text-align: center; }
+
+            @media print {
+                .no-print { display: none !important; }
+                * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                /* Evita que las secciones se corten a la mitad si es posible */
+                .content table, .content h4 { page-break-inside: avoid; }
+            }
+        </style>
+
+        <img src="{{ asset('image/img.png') }}" class="rounded mx-auto d-block" width="150">
+        
+        <h4 class="text-center header-purple-a">
+            CERTIFICADO - EVALUACIÓN MÉDICA OCUPACIONAL
+        </h4>
+
+        {# A. DATOS (Siempre visible) #}
+        {{ include('full_antecedentes/_seccion_a_datos.html.twig') }}
+
+        {# B. MOTIVO DE CONSULTA (Siempre visible) #}
+        {{ include('full_antecedentes/_seccion_b_motivo_consulta.html.twig') }}
+
+        {# L. APTITUD MEDICA (Siempre visible según tu instrucción) #}
+        {{ include('full_antecedentes/_seccion_l_aptitud_medica.html.twig') }}
+
+        {# M. RECOMENDACION Y TRATAMIENTO (Siempre visible) #}
+        {{ include('full_antecedentes/_seccion_m_recomendacion_tratamiento.html.twig') }}
+
+        {# O. FIRMAS (Siempre visible) #}
+        {{ include('full_antecedentes/_seccion_o_firmas.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    
+    $("#print_Button_Full").click(function() {
+        var options = { 
+            mode : 'iframe', 
+            popClose : false,
+            extraCss : "", 
+            retainAttr : ["class", "style", "id"],
+            importCSS: true, // Intenta importar los CSS de la página padre
+            importStyle: true // Importa las etiquetas <style>
+        };
+        $("#printableArea").printArea(options);
+    });
+
+    var reportTableConfig = {
+        language: { url: 'https://cdn.datatables.net/plug-ins/1.10.22/i18n/Spanish.json' },
+        columnDefs: [{ targets: [0], visible: false }],
+        rowGroup: { dataSrc: [0] },
+        searching: false,
+        paging: false,
+        ordering: false,
+        info: false,
+        autoWidth: false
+    };
+
+    $('#dgo, #example2, #example3, #example4, #example5').DataTable(reportTableConfig);
+});
+</script>
+{% endblock %}

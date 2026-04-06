@@ -1,0 +1,70 @@
+{# SECCIÓN B: MOTIVO DE CONSULTA CON FECHAS DINÁMICAS #}
+<h5 class="header-purple-a">
+    B. MOTIVO DE CONSULTA
+</h5>
+<table class="table-motivo">
+    <tbody>
+        {# Fila 1: Puesto y Fecha Atención General #}
+        <tr>
+            <td class="label-green-a">Puesto de Trabajo CIUO</td>
+            <td colspan="2" class="value-cell-a">{{ paciente.puestotrabajo.nombre|default('N/A') }}</td>
+            <td colspan="2" class="label-green-a text-center">Fecha y Hora de Atención</td>
+<td class="value-cell-a">
+    {{ consulta.fecharegistro ? consulta.fecharegistro|date('Y/m/d H:i:s') : 'No hay fecha' }}
+</td>
+        </tr>
+
+        {# Fila 2: Fechas de hitos laborales - AQUÍ ESTÁ LA LÓGICA DINÁMICA #}
+        <tr>
+             <td class="label-green-a">Fecha de Ingreso al trabajo aaaa/mm/dd</td>
+    <td class="value-cell-a">
+        {% if consulta.motivoconsulta == "Ingreso" %}
+            {{ consulta.fechaAtencion|date('Y/m/d') }}
+        {% elseif consulta.motivoconsulta == "Periódica" and paciente.fechaIngreso is defined and paciente.fechaIngreso is not empty %}
+            {{ paciente.fechaIngreso|date('Y/m/d') }}
+        {% endif %}
+    </td>
+    
+    <td class="label-green-a">Fecha de Reintegro aaaa/mm/dd</td>
+    <td class="value-cell-a">
+    {{ consulta.fecharegistro ? consulta.fecharegistro|date('Y/m/d H:i:s') : 'No hay fecha' }}
+</td>
+    </td>
+    
+    <td class="label-green-a">Fecha del Último día laboral/salida aaaa/mm/dd</td>
+    <td class="value-cell-a">
+        {{ (consulta.motivoconsulta == "Salida") ? consulta.fechaAtencion|date('Y/m/d') : '' }}
+    </td>
+        </tr>
+
+        <tr>
+            <td colspan="6" class="label-green-a" style="font-weight: bold; font-size: 0.8rem; text-align: left;">TIPO DE EVALUACIÓN</td>
+        </tr>
+
+        {# Fila 4: Checkboxes marcados según motivo #}
+        <tr>
+            <td class="label-green-a">INGRESO</td>
+            <td class="value-cell-a"><b>{{ (consulta.motivoconsulta == "Ingreso") ? 'X' : '' }}</b></td>
+            <td class="label-green-a">PERIÓDICO</td>
+            <td class="value-cell-a"><b>{{ (consulta.motivoconsulta == "Periódica") ? 'X' : '' }}</b></td>
+            <td class="label-green-a">REINTEGRO</td>
+            <td class="value-cell-a"><b>{{ (consulta.motivoconsulta == "Reingreso") ? 'X' : '' }}</b></td>
+        </tr>
+        <tr>
+            <td class="label-green-a">RETIRO</td>
+            <td class="value-cell-a"><b>{{ (consulta.motivoconsulta == "Salida") ? 'X' : '' }}</b></td>
+            <td class="label-green-a">MÉDICA (Otro)</td>
+            <td class="value-cell-a"><b>{{ (consulta.motivoconsulta == "Médica") ? 'X' : '' }}</b></td>
+            <td class="label-green-a">OBSERVACIÓN</td>
+            <td class="value-cell-a">--</td>
+        </tr>
+
+        {# Fila 5: Observación #}
+        <tr>
+            <td class="label-green-a">Observación</td>
+            <td colspan="5" class="value-cell-a" style="text-align: left; padding-left: 10px;">
+                {{ consulta.observacionMotivo|default('Ninguna') }}
+            </td>
+        </tr>
+    </tbody>
+</table>
