@@ -22,17 +22,27 @@
 }
 .pdf24_02 {
     font-size: 1em;
-    line-height: 1.15; /* Mejoramos el interlineado base */
+    line-height: 1.0em; 
     width: 49.5em;
-    height: auto;      /* Cambiado de 70.16em para que crezca con el contenido */
-    min-height: 70.16666em;
-    border: 1px solid #d3d3d3; /* Borde sutil de papel */
+    height: 70.16666em;
+    
+    /* ELIMINAMOS SOMBRAS Y BORDES */
+    border-style: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    
     display: block;
-    margin: 1em auto;  /* Centra la hoja en la pantalla */
-    background: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra elegante */
-    padding: 2em;      /* Espaciado interno para que el texto no toque el borde */
-    position: relative;
+    
+    /* CENTRADO DE LA PÁGINA */
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* CONTENEDOR BASE */
+    position: relative; 
+    background-color: white;
+    
+    /* QUITAMOS PADDING PARA QUE NO DESPLACE LOS LOGOS */
+    padding: 0 !important;
 }
 
 /* Estilo para los títulos de sección (A, B, C...) */
@@ -51,10 +61,29 @@
 	position: relative;
 }
 .pdf24_04 {
-	position: absolute;
-	pointer-events: none;
-	clip: rect(-0.044998em,49.62167em,70.20834em,0.933333em);
-	width: 100%;
+    position: absolute !important;
+    pointer-events: none;
+    
+    /* Mantenemos el clip que ya te funcionaba */
+    clip: rect(-0.044998em, 49.62167em, 70.20834em, 0.933333em);
+	mix-blend-mode: multiply;
+	/* 2. OCULTA CUALQUIER BORDE RESIDUAL */
+    border: none !important;
+    outline: none !important;
+	-webkit-print-color-adjust: exact;
+    
+    /* Volvemos al width que te funcionó para bajarlos */
+    width: 133% !important; 
+    left: 2em !important; /* Mueve hacia la derecha */
+
+    /* LA SOLUCIÓN: */
+    /* 1. scaleX(0.72): Encoge la imagen horizontalmente para que el 140% de ancho 
+       vuelva a parecer un 100% y no se salga de la hoja. (1 / 1.4 = ~0.72)
+    */
+    transform: scaleX(0.75) !important;
+    
+    /* Ajustamos el origen para que no se mueva de la izquierda */
+    transform-origin: left;
 }
 .pdf24_05 {
 	position: relative;
